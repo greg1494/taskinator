@@ -106,13 +106,42 @@ formE1.addEventListener("click", taskFormHandler);
 
 
 var taskButtonHandler = function(event) {
-    console.log(event.target);
+    // get target element from event
+    var targetE1 = event.target;
 
-    if (event.target.matches(".delete-btn")) {
+    // edit button was clicked
+    if (targetE1.matches(".edit-btn")) {
         // get the element's task id 
-        var taskId = event.target.getAttribute("data-task-id");
-        console.log("taskId");
+        var taskId = targetE1.getAttribute("data-task-id");
+        editTask("taskId");
     }
+    //delete button was clicked
+    else if (targetE1.matches(".delete.btn")) {
+        var taskId = targetE1.getAttribute("data-task-id");
+        deleteTask(taskId);
+    }
+};
+
+var editTask = function(taskId) {
+    console.log(taskId);
+
+    // get task list item Element
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    // get content from task name and type
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+    console.log(taskName);
+
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+    console.log(taskType);
+
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("input[name='task-type']").value = taskName;
+
+    // set data attribute to the form with a value of the task's id so it knows which one is being edited
+    formEl.setAttribute("data-task-id", taskId);
+  // update form's button to reflect editing a task rather than creating a new one
+    formEl.querySelector("#save-task").textContent = "Save Task";
 };
 
 var deleteTask = function(taskId) {
@@ -121,4 +150,11 @@ var deleteTask = function(taskId) {
 
 };
 
-pageContentE1.addEventListener("click", taskButtonHandler);
+// Create a new task
+formEl.addEventListener("submit", taskFormHandler);
+
+// for edit and delete buttons
+pageContentEl.addEventListener("click", taskButtonHandler);
+
+// for changing the status
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
